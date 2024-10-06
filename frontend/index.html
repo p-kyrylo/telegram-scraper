@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Scraper</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Telegram Channel Scraper</h1>
+        <form id="scrape-form">
+            <label for="channel-name">Channel Name:</label>
+            <input type="text" id="channel-name" name="channel_name" required>
+
+            <label for="limit">Message Limit (optional):</label>
+            <input type="number" id="limit" name="limit">
+
+            <label for="format">Select Format:</label>
+            <select id="format" name="format" required>
+                <option value="json">JSON</option>
+                <option value="csv">CSV</option>
+            </select>
+
+            <label for="download-media">Download Media:</label>
+            <input type="checkbox" id="download-media" name="download_media">
+
+            <button type="submit" id="download-btn">Scrape channel</button>
+        </form>
+        <div id="error-message" class="error"></div>
+        <p id="status-message"></p> 
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

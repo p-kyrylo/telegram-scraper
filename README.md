@@ -13,7 +13,7 @@ This tool allows users to scrape messages from a specified Telegram channel. The
 
 Before running the tool, ensure you have the following installed:
 
-- Python 3.8 or later
+- Python 3.10 or later
 - FastAPI
 - Telethon
 - Python-dotenv

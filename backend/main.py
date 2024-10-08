@@ -71,7 +71,7 @@ def savefile(filename: str, content: list, format: str):
     match format:
         case FileFormat.JSON.value:
             with open(filename, 'w', encoding='utf-8') as file:
-                    json.dump(content, file, ensure_ascii=False, indent=4)
+                json.dump(content, file, ensure_ascii=False, indent=4)
         case FileFormat.CSV.value:
             with open(filename, 'w', newline= '', encoding= 'utf-8') as file:
                 if content:

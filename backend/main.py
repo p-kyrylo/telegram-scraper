@@ -17,7 +17,7 @@ load_dotenv()
 api_id = os.getenv('API_ID')
 api_hash = os.getenv('API_HASH')
 
-client = TelegramClient('my_session', api_id, api_hash)
+client = None
 
 class FileFormat(Enum):
     JSON = 'json'
@@ -25,6 +25,7 @@ class FileFormat(Enum):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    client = TelegramClient('my_session', api_id, api_hash)
     await client.start()
     yield
     await client.disconnect()
@@ -80,4 +81,4 @@ def savefile(filename: str, content: list, format: str):
      
 if __name__=='__main__':
     webbrowser.open("http://localhost:8000/static/index.html") 
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level='debug')
+    uvicorn.run("main:app", host="127.0.0.1", port=8000)

@@ -25,6 +25,7 @@ class FileFormat(Enum):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global client
     client = TelegramClient('my_session', api_id, api_hash)
     await client.start()
     yield

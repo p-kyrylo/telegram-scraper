@@ -21,10 +21,10 @@
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
             </select>
-
-            <label for="download-media">Download Media:</label>
-            <input type="checkbox" id="download-media" name="download_media">
-
+            <div style="display: flex; width: 100%; margin-top: 1rem;">
+                <label for="download-media">Download Media:</label>
+                <input type="checkbox" id="download-media" style="width: auto;" name="download_media">
+            </div>
             <button type="submit" id="download-btn">Scrape channel</button>
         </form>
         <div id="error-message" class="error"></div>

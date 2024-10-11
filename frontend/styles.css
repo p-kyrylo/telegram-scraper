@@ -1,8 +1,10 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    background-image: url('assets/background.png'); 
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; 
 }
 
 .container {
@@ -38,6 +40,7 @@ input {
 }
 
 button {
+    margin: 0.25rem;
     padding: 10px 20px;
     background-color: #28a745;
     color: white;

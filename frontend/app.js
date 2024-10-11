@@ -29,8 +29,27 @@ document.getElementById('scrape-form').addEventListener('submit', async function
         if (!response.ok) {
             throw new Error('Failed to scrape channel: ' + response.statusText);
         }
-        statusMessage.textContent = 'Scraping is finished!';
 
+        statusMessage.textContent = "Scraping finished.";
+        const downloadButton = document.getElementById("download-content");
+        downloadButton.style.display = "block";
+        downloadButton.addEventListener("click", download);
+
+        async function download() {
+            const fileBlob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(fileBlob);
+
+            // Create a download link and click it to download the file
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `${channelName}_messages.${format}`;
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(downloadUrl);
+        }
      } catch (error) {
          errorMessage.textContent = error.message;
     }

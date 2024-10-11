@@ -14,7 +14,7 @@
             <input type="text" id="channel-name" name="channel_name" required>
 
             <label for="limit">Message Limit (optional):</label>
-            <input type="number" id="limit" name="limit">
+            <input type="number" id="limit" name="limit" min="1" step="1">
 
             <label for="format">Select Format:</label>
             <select id="format" name="format" required>
@@ -26,6 +26,7 @@
                 <input type="checkbox" id="download-media" style="width: auto;" name="download_media">
             </div>
             <button type="submit" id="download-btn">Scrape channel</button>
+            <button type="button" id="download-content" style="display: none">Download</button>
         </form>
         <div id="error-message" class="error"></div>
         <p id="status-message"></p> 

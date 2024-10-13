@@ -22,6 +22,9 @@ document.getElementById('scrape-form').addEventListener('submit', async function
 
         if (downloadMedia) {
             url += `&download_media=true`;
+            const mediaButton = document.getElementById("media")
+            mediaButton.style.display = "block"
+            mediaButton.addEventListener("click", get_media)
         }
         // Send GET request to the FastAPI backend
         const response = await fetch(url);
@@ -34,6 +37,7 @@ document.getElementById('scrape-form').addEventListener('submit', async function
         const downloadButton = document.getElementById("download-content");
         downloadButton.style.display = "block";
         downloadButton.addEventListener("click", download);
+
 
         async function download() {
             const fileBlob = await response.blob();
@@ -50,6 +54,26 @@ document.getElementById('scrape-form').addEventListener('submit', async function
             document.body.removeChild(a);
             window.URL.revokeObjectURL(downloadUrl);
         }
+
+        async function get_media() {
+            const url = `http://localhost:8000/dowload_media_files`
+
+            const response = await fetch(url)
+            const fileBlob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(fileBlob);
+
+            // Create a download link and click it to download the file
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `${channelName}_messages.zip`;
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(downloadUrl);
+        }
+
      } catch (error) {
          errorMessage.textContent = error.message;
     }

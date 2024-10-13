@@ -2,4 +2,4 @@ backend/__pycache__
 backend/.env
 backend/my_session.session
 .venv
-media/
+*.zip

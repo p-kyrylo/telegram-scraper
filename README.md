@@ -22,7 +22,7 @@ Before running the tool, ensure you have the following installed:
 ### Install the dependencies:
 
 ```bash
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Enviroment setup 
@@ -46,4 +46,6 @@ This will start the FastAPI server and open the web interface in your default br
 ```bash
 http://localhost:8000/static/index.html
 ```
-all the scraped messages will be saved inside the `backend` folder, and media will be saved inside the `backend/media`folder.  
+### Interface preview 
+
+![UI Preview](frontend/assets/ui_preview.png)

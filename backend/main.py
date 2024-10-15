@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import PlainTextResponse, RedirectResponse, FileResponse
+from fastapi.responses import PlainTextResponse, RedirectResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
@@ -41,7 +41,7 @@ async def root():
     return RedirectResponse("/static/index.html")
 
 @app.get('/scrape_channel/{channel_name}', response_class=PlainTextResponse)
-async def scrape_channel(channel_name: str, format, limit: int | None = None, download_media: bool = False):
+async def scrape_channel(channel_name: str, format, limit: int | None = None, download_media: bool = False): 
     try:
         print(f"Received channel name: {channel_name}")
         entity = await client.get_entity(channel_name)
@@ -56,28 +56,32 @@ async def scrape_channel(channel_name: str, format, limit: int | None = None, do
                 "date": message.date.isoformat()
             })
         
+        fname = None
         if download_media:
-            await get_media(obj_messages)
+            fname = await get_media(obj_messages)
 
         if not messages:
             raise HTTPException(status_code=404, detail="No messages found.")
         
         content = format_content(messages, format)
 
-        return PlainTextResponse(content=content, media_type=f'application/{FileFormat(format).value}')
+        return PlainTextResponse(content=content, headers={"Content-Disposition": f"attachment; filename={fname}"}, media_type=f'application/{FileFormat(format).value}')
 
     except ChannelInvalidError:
         raise HTTPException(status_code=400, detail="Invalid channel name.")
     
     except ChannelPrivateError:
         raise HTTPException(status_code=403, detail="The channel is private and cannot be scraped.")
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    
-@app.get('/dowload_media_files', response_class=FileResponse)
-async def download_media_files():
-    return FileResponse('media.zip', media_type='application/zip')
+
+@app.get('/dowload_media_files/{file_name}', response_class=FileResponse)
+async def download_media_files(file_name: str):
+    buffer = None
+    file_path = f'{file_name}.zip'
+    with open(file_path, "rb") as f:
+        buffer = f.read()
+    os.remove(file_path)
+
+    return Response(buffer, media_type="application/zip")
         
 def format_content(content: list, format: str):
     match format:
@@ -92,16 +96,19 @@ def format_content(content: list, format: str):
                 return string_stream.getvalue()
 
 async def get_media(messages):
+    fname = str(uuid4())
     if not os.path.isdir('media'):
-        os.mkdir('media')
+        os.mkdir(fname)
     for message in messages:
-        await message.download_media(file='media')
+        await message.download_media(file=fname)
 
-    with ZipFile('media.zip', 'w') as zip_object:
-        for file in os.listdir('media'):
-            zip_object.write(os.path.join('media', file))
+    with ZipFile(f'{fname}.zip', 'w') as zip_object:
+        for file in os.listdir(fname):
+            zip_object.write(os.path.join(fname, file))
 
-    shutil.rmtree('media')
+    shutil.rmtree(fname)
     
+    return fname
+
 if __name__=='__main__':
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)

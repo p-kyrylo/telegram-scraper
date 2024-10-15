@@ -7,6 +7,7 @@ document.getElementById('scrape-form').addEventListener('submit', async function
     const statusMessage = document.getElementById('status-message');
     const downloadMedia = document.getElementById("download-media").checked;
     statusMessage.textContent = 'Scraping...';
+    let showMediaButton = false;
 
     // Clear previous error messages
     const errorMessage = document.getElementById('error-message');
@@ -22,12 +23,17 @@ document.getElementById('scrape-form').addEventListener('submit', async function
 
         if (downloadMedia) {
             url += `&download_media=true`;
-            const mediaButton = document.getElementById("media")
-            mediaButton.style.display = "block"
-            mediaButton.addEventListener("click", get_media)
+            showMediaButton = true;
         }
+
         // Send GET request to the FastAPI backend
+        let file_name = null
         const response = await fetch(url);
+        console.log(response.headers.get("Content-Disposition"))
+        if (response.headers.get("Content-Disposition").split("=")[1] != "None") {
+            const content = response.headers.get("Content-Disposition").split("=");
+            fileName = content[1];
+        }
         
         if (!response.ok) {
             throw new Error('Failed to scrape channel: ' + response.statusText);
@@ -38,6 +44,11 @@ document.getElementById('scrape-form').addEventListener('submit', async function
         downloadButton.style.display = "block";
         downloadButton.addEventListener("click", download);
 
+        if (showMediaButton){
+            const mediaButton = document.getElementById("media");
+            mediaButton.style.display = "block";
+            mediaButton.addEventListener("click", get_media);
+        }
 
         async function download() {
             const fileBlob = await response.blob();
@@ -56,9 +67,9 @@ document.getElementById('scrape-form').addEventListener('submit', async function
         }
 
         async function get_media() {
-            const url = `http://localhost:8000/dowload_media_files`
+            const url = `/dowload_media_files/${fileName}`;
 
-            const response = await fetch(url)
+            const response = await fetch(url);
             const fileBlob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(fileBlob);
 
